@@ -120,7 +120,7 @@ def list_packages(owner: str, repo: str, tag: str, package_name: str) -> list[Pa
             "Body:\n{response.text}"
         )
 
-    return process_release(response.json(), package_name)
+    return process_release(response.json(), package_name.replace('-', '_'))
 
 
 def main():
