@@ -126,9 +126,9 @@ def list_packages(owner: str, repo: str, tag: str, package_name: str) -> list[Pa
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True, help="The python project name, used to filter wheels from release page.")
-    parser.add_argument("--organization", required=True, help="JSON string of wheels")
-    parser.add_argument("--repository", required=True, help="JSON string of wheels")
-    parser.add_argument("--tag", required=True, help="JSON string of wheels")
+    parser.add_argument("--organization", required=True, help="Github organization name. May be a username.")
+    parser.add_argument("--repository", required=True, help="Repository name in given organization.")
+    parser.add_argument("--tag", required=True, help="Release tag identifier.")
     args = parser.parse_args()
 
     with open("sources.txt", "r") as file:
