@@ -2,7 +2,7 @@ name: Update PyPI Index
 
 on:
   repository_dispatch:
-    types: [new-release] # This is the custom event name we will listen for
+    types: [update-project-index]
 
 jobs:
   update-index:
@@ -18,20 +18,21 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+          pip-install: lxml requests
 
       - name: Update HTML Files
         env:
+          REPOSITORY_ORG: ${{ github.event.client_payload.repository_org }}
+          REPOSITORY_NAME: ${{ github.event.client_payload.repository_name }}
+          RELEASE_TAG: ${{ github.event.client_payload.release_tag }}
           PROJECT_NAME: ${{ github.event.client_payload.project_name }}
-          WHEEL_NAME: ${{ github.event.client_payload.wheel_name }}
-          WHEEL_URL: ${{ github.event.client_payload.wheel_url }}
-          SHA256: ${{ github.event.client_payload.sha256 }}
         run: |
-          python update_index.py
+          python update_index.py --name "$PROJECT_NAME"
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "Kitware Europe"
+          git config --global user.email "kitware@kitware.eu"
           git add index.html ${{ github.event.client_payload.project_name }}/index.html
-          git commit -m "Add ${{ github.event.client_payload.wheel_name }} to index"
+          git commit -m "index: Update index of ${{ github.event.client_payload.project_org }}/${{ github.event.client_payload.project_name }}"
           git push
